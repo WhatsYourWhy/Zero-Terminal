@@ -1,0 +1,28 @@
+/* Boot sequence styles */
+.boot-progress {
+  display: inline-block;
+  min-width: 200px;
+}
+
+.boot-ok {
+  color: var(--text);
+}
+
+.boot-warn {
+  color: var(--warn);
+}
+
+.boot-fail {
+  color: var(--error);
+}
+
+.login-input {
+  color: var(--text);
+  text-shadow: 0 0 5px var(--text-glow);
+}
+
+.skip-hint {
+  color: var(--text-dim);
+  text-shadow: none;
+  font-size: 0.85em;
+}

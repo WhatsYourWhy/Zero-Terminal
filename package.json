@@ -1,0 +1,14 @@
+{
+  "name": "zero-terminal",
+  "version": "6.0.0",
+  "description": "An operating system for figuring it out.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6.2.0"
+  }
+}
