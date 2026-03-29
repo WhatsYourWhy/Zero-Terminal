@@ -18,7 +18,7 @@ export const projects = [
     slug: 'temporal-gradient',
     description: 'Research — context ranking, psi scoring, AI systems',
     status: 'active',
-    url: 'https://orcid.org/0009-0005-4473-2515',
+    url: 'https://github.com/WhatsYourWhy/The-Temporal-Gradient',
   },
   {
     name: 'The Polymath',
@@ -28,11 +28,11 @@ export const projects = [
     url: 'https://the-polymath.xyz',
   },
   {
-    name: 'Video Factory',
-    slug: 'video-factory',
-    description: 'Content tools & automation',
+    name: 'Dragons & Distractions',
+    slug: 'dragons',
+    description: 'Card game — design / content / store',
     status: 'active',
-    url: '#',
+    url: 'https://github.com/WhatsYourWhy/dragons-and-distractions-site',
   },
   {
     name: 'Zero Terminal',
@@ -55,6 +55,45 @@ export const projects = [
     status: 'active',
     url: 'https://whatsyourwhy85.gumroad.com/',
   },
+  {
+    name: 'Cognitive Glow',
+    slug: 'cognitive-glow',
+    description: 'AI cognitive framework',
+    status: 'active',
+    url: 'https://github.com/WhatsYourWhy/Cognitive-Glow',
+  },
+  {
+    name: 'Biological Data OS',
+    slug: 'bio-data-os',
+    description: 'Biological data operating system',
+    status: 'active',
+    url: 'https://github.com/WhatsYourWhy/Biological-Data-OS',
+  },
+];
+
+export const repos = [
+  { name: 'Zero-Terminal', description: 'Terminal-themed personal website', url: 'https://github.com/WhatsYourWhy/Zero-Terminal' },
+  { name: 'Biological-Data-OS', description: 'Biological data operating system', url: 'https://github.com/WhatsYourWhy/Biological-Data-OS' },
+  { name: 'dragons-and-distractions-site', description: 'Dragons & Distractions website', url: 'https://github.com/WhatsYourWhy/dragons-and-distractions-site' },
+  { name: 'dragons-and-distractions-card-preview', description: 'Card preview tool', url: 'https://github.com/WhatsYourWhy/dragons-and-distractions-card-preview' },
+  { name: 'Cognitive-Glow', description: 'AI cognitive framework', url: 'https://github.com/WhatsYourWhy/Cognitive-Glow' },
+  { name: 'Hardstop', description: 'Hardstop utility', url: 'https://github.com/WhatsYourWhy/Hardstop' },
+  { name: 'Thresholds', description: 'Threshold detection system', url: 'https://github.com/WhatsYourWhy/Thresholds' },
+  { name: 'Lumina-Pro', description: 'Lumina Pro tool', url: 'https://github.com/WhatsYourWhy/Lumina-Pro' },
+  { name: 'The-Temporal-Gradient', description: 'Temporal gradient research framework', url: 'https://github.com/WhatsYourWhy/The-Temporal-Gradient' },
+  { name: 'GRBToolkit', description: 'Gamma-ray burst analysis toolkit', url: 'https://github.com/WhatsYourWhy/GRBToolkit' },
+  { name: 'TopoGuard', description: 'Topological data guard', url: 'https://github.com/WhatsYourWhy/TopoGuard' },
+  { name: 'journey-log', description: 'Personal journey logger', url: 'https://github.com/WhatsYourWhy/journey-log' },
+  { name: 'strainer-cli', description: 'CLI strainer tool', url: 'https://github.com/WhatsYourWhy/strainer-cli' },
+  { name: 'psi-loop', description: 'Psi loop simulation', url: 'https://github.com/WhatsYourWhy/psi-loop' },
+  { name: 'Alert-Axolotl-Evo', description: 'Alert system evolution', url: 'https://github.com/WhatsYourWhy/Alert-Axolotl-Evo' },
+  { name: 'information-causality-rg-note', description: 'Information causality research note', url: 'https://github.com/WhatsYourWhy/information-causality-rg-note' },
+  { name: 'obsidian-releases', description: 'Obsidian plugin releases', url: 'https://github.com/WhatsYourWhy/obsidian-releases' },
+  { name: 'obsidian-spotify-link', description: 'Obsidian Spotify link plugin', url: 'https://github.com/WhatsYourWhy/obsidian-spotify-link' },
+  { name: 'shank-strategy-ops-web', description: 'Shank Strategy website source', url: 'https://github.com/WhatsYourWhy/shank-strategy-ops-web' },
+  { name: 'WhatsYourWhy', description: 'GitHub profile repo', url: 'https://github.com/WhatsYourWhy/WhatsYourWhy' },
+  { name: 'whatsyourwhy.github.io', description: 'GitHub Pages site', url: 'https://github.com/WhatsYourWhy/whatsyourwhy.github.io' },
+  { name: 'Seralyth-Menu', description: 'Seralyth menu system', url: 'https://github.com/WhatsYourWhy/Seralyth-Menu' },
 ];
 
 export const unfinished = [

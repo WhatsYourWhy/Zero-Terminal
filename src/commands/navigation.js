@@ -1,5 +1,5 @@
 import { registerCommands } from './registry.js';
-import { projects } from '../data/projects.js';
+import { projects, repos } from '../data/projects.js';
 import { links } from '../data/links.js';
 
 export function registerNavigationCommands(terminal) {
@@ -65,7 +65,16 @@ function open({ args }) {
     return `${name}: link coming soon.`;
   }
 
-  return `Not found: ${name}. Type 'open' to see available options.`;
+  // Check GitHub repos
+  const repo = repos.find(
+    r => r.name.toLowerCase() === name || r.name.toLowerCase().replace(/-/g, ' ') === name
+  );
+  if (repo) {
+    window.open(repo.url, '_blank');
+    return `Opening ${repo.name} on GitHub...`;
+  }
+
+  return `Not found: ${name}. Type 'open' or 'repos' to see available options.`;
 }
 
 function call({ args }) {
