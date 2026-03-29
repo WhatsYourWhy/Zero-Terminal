@@ -1,0 +1,59 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Zero Terminal
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Checkout GitHub Pages repo
+        uses: actions/checkout@v4
+        with:
+          repository: WhatsYourWhy/whatsyourwhy.github.io
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: ghpages
+
+      - name: Preserve privacy.html
+        run: |
+          if [ -f ghpages/privacy.html ]; then
+            cp ghpages/privacy.html /tmp/privacy.html
+          fi
+
+      - name: Replace site with build output
+        run: |
+          find ghpages -maxdepth 1 -not -name '.git' -not -name 'ghpages' -not -name 'privacy.html' -exec rm -rf {} + 2>/dev/null || true
+          cp -r dist/* ghpages/
+          if [ -f /tmp/privacy.html ]; then
+            cp /tmp/privacy.html ghpages/privacy.html
+          fi
+
+      - name: Deploy
+        run: |
+          cd ghpages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && echo "No changes to deploy" && exit 0
+          git commit -m "Deploy ZERO TERMINAL from ${{ github.sha }}"
+          git push
