@@ -48,6 +48,7 @@ function setupMobileBar(terminal) {
     pill.textContent = cmd;
     pill.addEventListener('click', (e) => {
       e.preventDefault();
+      if (!terminal.inputHandler.enabled) return;
       terminal.inputEl.value = cmd;
       terminal.handleInput(cmd);
     });
