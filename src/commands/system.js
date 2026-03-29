@@ -11,6 +11,8 @@ export function registerSystemCommands(terminal) {
     ['cd', cd, 'Change directory', 'system'],
     ['cat', cat, 'Read file contents', 'system'],
     ['pwd', pwd, 'Print working directory', 'system'],
+    ['history', history, 'Show command history', 'system'],
+    ['uptime', uptime, 'Show session uptime', 'system'],
   ]);
 }
 
@@ -94,4 +96,43 @@ function cat({ terminal, args }) {
 
 function pwd({ terminal }) {
   return terminal.cwd;
+}
+
+function history({ terminal, args }) {
+  if (args[0] === 'clear') {
+    terminal.inputHandler.history.length = 0;
+    return 'History cleared.';
+  }
+
+  const hist = terminal.inputHandler.history;
+  if (hist.length === 0) return 'No commands in history.';
+
+  const reversed = [...hist].reverse();
+  const lines = ['Command History:', ''];
+  reversed.forEach((cmd, i) => {
+    lines.push(`  ${String(i + 1).padStart(4)}  ${cmd}`);
+  });
+  return lines.join('\n');
+}
+
+function uptime({ state }) {
+  const elapsed = Date.now() - state.startTime;
+  const seconds = Math.floor(elapsed / 1000);
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+
+  let duration;
+  if (h > 0) {
+    duration = `${h}h ${m}m ${s}s`;
+  } else if (m > 0) {
+    duration = `${m}m ${s}s`;
+  } else {
+    duration = `${s}s`;
+  }
+
+  return [
+    `Session uptime: ${duration}`,
+    `Coffee consumed: ${state.coffeeCount} cup${state.coffeeCount !== 1 ? 's' : ''}`,
+  ].join('\n');
 }

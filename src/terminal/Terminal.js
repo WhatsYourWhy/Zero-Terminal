@@ -16,6 +16,7 @@ export class Terminal {
     this.state = {
       coffeeCount: 0,
       theme: 'green',
+      startTime: Date.now(),
     };
 
     // Initially hide input line until boot completes

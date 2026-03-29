@@ -176,4 +176,13 @@ export class FileSystem {
 
     return `${path}: is a directory. Use 'ls' instead.`;
   }
+
+  getEntries(path, cwd) {
+    const result = this.resolve(path || cwd, cwd);
+    if (result.error || typeof result.node === 'string') return [];
+    return Object.keys(result.node).map(key => ({
+      name: key,
+      isDir: typeof result.node[key] === 'object',
+    }));
+  }
 }

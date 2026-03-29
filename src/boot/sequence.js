@@ -17,7 +17,7 @@ export async function runBootSequence(terminal) {
     return r.wait(ms);
   };
 
-  const type = async (text, cls = '', speed = 10) => {
+  const type = async (text, cls = '', speed = 8) => {
     if (skipped) {
       r.printLine(text, cls);
       return;
@@ -29,19 +29,22 @@ export async function runBootSequence(terminal) {
   const logoLines = LOGO.split('\n');
   for (const line of logoLines) {
     r.printLine(line, 'ascii');
-    await delay(60);
+    await delay(30);
   }
 
+  // Skip hint
+  r.printLine('Press ESC or SPACE to skip', 'skip-hint');
+
   r.blank();
-  await type(DIVIDER, 'dim', 5);
+  await type(DIVIDER, 'dim', 3);
   r.blank();
-  await type('ZERO TERMINAL v6.0', '', 20);
-  await type('An operating system for figuring it out.', 'dim', 15);
+  await type('ZERO TERMINAL v6.0', '', 12);
+  await type('An operating system for figuring it out.', 'dim', 10);
   r.blank();
-  await delay(300);
+  await delay(150);
 
   // Module loading
-  await type('Initializing system...', '', 15);
+  await type('Initializing system...', '', 10);
   r.blank();
 
   const modules = [
@@ -57,27 +60,26 @@ export async function runBootSequence(terminal) {
   ];
 
   for (const [name, status, cls] of modules) {
-    const pad = 30 - name.length;
     const line = `  [${status.padEnd(8)}] ${name}`;
     if (skipped) {
       r.printLine(line, cls === 'boot-warn' ? 'warn' : '');
     } else {
-      await r.typeLine(line, cls === 'boot-warn' ? 'warn' : '', 6);
-      await delay(80);
+      await r.typeLine(line, cls === 'boot-warn' ? 'warn' : '', 4);
+      await delay(40);
     }
   }
 
   r.blank();
-  await type('All systems nominal.', '', 15);
+  await type('All systems nominal.', '', 10);
   r.blank();
-  await delay(400);
+  await delay(200);
 
   // Login
-  await type(DIVIDER, 'dim', 5);
+  await type(DIVIDER, 'dim', 3);
   r.blank();
 
   // Login prompt — cosmetic
-  await type('Login required.', '', 15);
+  await type('Login required.', '', 10);
   r.blank();
 
   // Show login prompt and accept input (bypass normal command handling)
@@ -101,17 +103,17 @@ export async function runBootSequence(terminal) {
   terminal.inputEl.type = 'text';
 
   r.blank();
-  await delay(300);
-  await type('Access granted.', '', 15);
+  await delay(200);
+  await type('Access granted.', '', 10);
   r.blank();
-  await type('Reminder:', 'dim', 15);
-  await type('You are running a temporary instance of you.', 'dim', 12);
-  await type('No backups found.', 'dim', 12);
+  await type('Reminder:', 'dim', 10);
+  await type('You are running a temporary instance of you.', 'dim', 8);
+  await type('No backups found.', 'dim', 8);
   r.blank();
-  await delay(400);
-  await type(DIVIDER, 'dim', 5);
+  await delay(200);
+  await type(DIVIDER, 'dim', 3);
   r.blank();
-  await type("Type 'help' to view available commands.", '', 15);
+  await type("Type 'help' to view available commands.", '', 10);
   r.blank();
 
   // Cleanup

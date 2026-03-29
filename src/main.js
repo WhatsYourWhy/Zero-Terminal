@@ -36,6 +36,24 @@ async function init() {
 
   // Enable input
   terminal.showInput();
+
+  // Check for ?cmd= query parameter (shareable URLs)
+  const params = new URLSearchParams(window.location.search);
+  const autoCmd = params.get('cmd');
+  if (autoCmd) {
+    const whitelist = [
+      'help', 'about', 'projects', 'status', 'research', 'store',
+      'writing', 'consulting', 'contact', 'now', 'repos', 'version',
+      'logs', 'theme', 'build', 'deploy', 'think', 'money', 'sleep',
+      'coffee', 'walk', 'focus', 'small_step', 'compare', 'doomscroll',
+      'redo_past', 'meaning', '42', 'why', 'history', 'uptime',
+      'shutdown', 'matrix', 'ls', 'cat', 'pwd',
+    ];
+    const cmd = autoCmd.trim().split(/\s+/)[0].toLowerCase();
+    if (whitelist.includes(cmd)) {
+      terminal.handleInput(autoCmd.trim());
+    }
+  }
 }
 
 function setupMobileBar(terminal) {

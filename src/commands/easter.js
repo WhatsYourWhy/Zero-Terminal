@@ -6,6 +6,7 @@ export function registerEasterCommands(terminal) {
     ['42', fortyTwo, 'The answer', 'easter'],
     ['sudo', sudo, 'Attempt root access', 'easter'],
     ['why', why, 'Display existential prompt', 'easter'],
+    ['matrix', matrix, 'Enter the Matrix', 'easter'],
   ]);
 }
 
@@ -75,4 +76,44 @@ function why() {
     '  6. Because it\'s interesting',
     '  7. Because you can',
   ].join('\n');
+}
+
+async function matrix({ renderer }) {
+  const canvas = document.createElement('canvas');
+  canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#000';
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const fontSize = 14;
+  const columns = Math.floor(canvas.width / fontSize);
+  const drops = new Array(columns).fill(1);
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*';
+
+  function draw() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#0f0';
+    ctx.font = `${fontSize}px monospace`;
+
+    for (let i = 0; i < drops.length; i++) {
+      const char = chars[Math.floor(Math.random() * chars.length)];
+      ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+      if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+  }
+
+  const interval = setInterval(draw, 33);
+  await renderer.wait(5000);
+  clearInterval(interval);
+  canvas.remove();
+
+  renderer.blank();
+  renderer.printLine("You've seen enough.", 'dim');
+  return null;
 }
