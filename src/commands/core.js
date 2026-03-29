@@ -1,5 +1,5 @@
 import { registerCommands } from './registry.js';
-import { projects } from '../data/projects.js';
+import { projects, repos } from '../data/projects.js';
 import { links } from '../data/links.js';
 
 export function registerCoreCommands(terminal) {
@@ -14,6 +14,7 @@ export function registerCoreCommands(terminal) {
     ['consulting', consulting, 'View consulting info', 'core'],
     ['contact', contact, 'Get in touch', 'core'],
     ['now', now, 'What I\'m working on now', 'core'],
+    ['repos', reposCmd, 'List GitHub repositories', 'core'],
   ]);
 }
 
@@ -116,9 +117,9 @@ function store() {
   return [
     'Stores:',
     '',
-    '  1. Dragons & Distractions',
-    '  2. The Man Store',
-    '  3. Digital Downloads (Gumroad)',
+    '  1. WhatsYourWhy (POD / main store)',
+    '  2. The Man Store (dropship)',
+    '  3. Operator Toolkit (Gumroad)',
     '',
     'Type: open <store-name> for link.',
   ].join('\n');
@@ -128,10 +129,9 @@ function writing() {
   return [
     'Writing:',
     '',
-    '  Platform: Substack',
+    `  Substack:    ${links.substack}`,
+    `  Newsletter:  ${links.polymath}`,
     '  Topics: systems, building, strategy, life',
-    '',
-    `  Link: ${links.substack}`,
     '',
     'More essays coming. Probably.',
   ].join('\n');
@@ -160,9 +160,10 @@ function contact() {
     '',
     `  GitHub:    ${links.github}`,
     `  LinkedIn:  ${links.linkedin}`,
-    `  Email:     ${links.email}`,
+    `  Twitter:   ${links.twitter}`,
+    `  ORCID:     ${links.orcid}`,
     '',
-    'Preferred: email or LinkedIn.',
+    'Preferred: LinkedIn.',
     'Response time: variable but genuine.',
   ].join('\n');
 }
@@ -179,4 +180,21 @@ function now() {
     '',
     'Updated: 2026',
   ].join('\n');
+}
+
+function reposCmd() {
+  const lines = [
+    `GitHub Repositories (${repos.length}):`,
+    `  ${links.github}`,
+    '',
+  ];
+
+  for (const repo of repos) {
+    const pad = 38 - repo.name.length;
+    lines.push(`  ${repo.name}${' '.repeat(Math.max(pad, 2))}${repo.description}`);
+  }
+
+  lines.push('');
+  lines.push('Type: open <repo-name> to view on GitHub.');
+  return lines.join('\n');
 }

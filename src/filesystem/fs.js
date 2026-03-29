@@ -1,15 +1,35 @@
 const fileTree = {
   zero: {
     projects: {
+      active: {
+        'zero-terminal': 'Terminal-themed personal website. You are here.',
+        'temporal-gradient': 'Research framework — context ranking, psi scoring, AI systems.',
+        'cognitive-glow': 'AI cognitive framework.',
+        'biological-data-os': 'Biological data operating system.',
+        'dragons-and-distractions': 'Card game — site + card preview tool.',
+        'shank-strategy-ops': 'Consulting website source.',
+        'hardstop': 'Hardstop utility.',
+        'thresholds': 'Threshold detection system.',
+        'lumina-pro': 'Lumina Pro tool.',
+        'grbtoolkit': 'Gamma-ray burst analysis toolkit.',
+        'topoguard': 'Topological data guard.',
+        'psi-loop': 'Psi loop simulation.',
+        'strainer-cli': 'CLI strainer tool.',
+        'alert-axolotl-evo': 'Alert system evolution.',
+        'journey-log': 'Personal journey logger.',
+        'seralyth-menu': 'Seralyth menu system.',
+      },
+      research: {
+        'information-causality-rg-note': 'Information causality research note.',
+        'obsidian-releases': 'Obsidian plugin releases.',
+        'obsidian-spotify-link': 'Obsidian Spotify link plugin.',
+      },
       unfinished: {
         'business_idea_17': 'A marketplace for... something. Details TBD.',
         'app_that_would_be_cool': 'The idea is solid. Execution is... pending.',
         'write_more': 'Just sit down and write. How hard can it be?',
         'get_in_shape_v4': 'This time for real. (said v1, v2, and v3)',
         'organize_everything': 'Step 1: Make a plan. Step 2: Lose the plan.',
-      },
-      almost_done: {
-        'zero_terminal': 'This site. Almost done. Always almost done.',
       },
       abandoned_but_good_ideas: {
         'that_one_saas': 'The idea was good. The timing was not.',
