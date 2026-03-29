@@ -112,16 +112,48 @@ export class InputHandler {
   }
 
   tabComplete() {
-    const partial = this.input.value.toLowerCase();
-    if (!partial) return;
+    const value = this.input.value;
+    if (!value) return;
 
+    const fsCommands = ['cd', 'ls', 'cat'];
+    const parts = value.split(/\s+/);
+    const cmd = parts[0].toLowerCase();
+
+    // Filesystem-aware completion
+    if (parts.length >= 2 && fsCommands.includes(cmd)) {
+      const fs = this.terminal._fs;
+      if (!fs) return;
+
+      const partial = parts.slice(1).join(' ');
+      const lastSlash = partial.lastIndexOf('/');
+      const dirPart = lastSlash >= 0 ? partial.substring(0, lastSlash + 1) : '';
+      const filePart = lastSlash >= 0 ? partial.substring(lastSlash + 1) : partial;
+
+      const entries = fs.getEntries(dirPart || '.', this.terminal.cwd);
+      const matches = entries.filter(e =>
+        e.name.toLowerCase().startsWith(filePart.toLowerCase())
+      );
+
+      if (matches.length === 1) {
+        const suffix = matches[0].isDir ? '/' : '';
+        this.input.value = `${cmd} ${dirPart}${matches[0].name}${suffix}`;
+      } else if (matches.length > 1) {
+        this.terminal.renderer.printLine(
+          matches.map(e => e.name + (e.isDir ? '/' : '')).join('  '),
+          'dim'
+        );
+      }
+      return;
+    }
+
+    // Command completion
+    const partial = value.toLowerCase();
     const commands = this.terminal.getCommandNames();
     const matches = commands.filter(c => c.startsWith(partial));
 
     if (matches.length === 1) {
       this.input.value = matches[0];
     } else if (matches.length > 1) {
-      // Show matches
       this.terminal.renderer.printLine(
         matches.join('  '),
         'dim'

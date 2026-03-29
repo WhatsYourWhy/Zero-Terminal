@@ -16,14 +16,32 @@ export class OutputRenderer {
     }
   }
 
-  // Render a line instantly
+  // Render a line instantly (auto-linkifies URLs)
   printLine(text, className = '') {
     const div = document.createElement('div');
     div.className = `line ${className}`.trim();
-    div.textContent = text;
+
+    if (/https?:\/\/\S+/.test(text)) {
+      div.innerHTML = this.linkify(text);
+    } else {
+      div.textContent = text;
+    }
+
     this.output.appendChild(div);
     this.scrollToBottom();
     return div;
+  }
+
+  // HTML-escape text and wrap URLs in clickable <a> tags
+  linkify(text) {
+    const escaped = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    return escaped.replace(
+      /https?:\/\/[^\s<>&]+/g,
+      url => `<a href="${url}" target="_blank" rel="noopener">${url}</a>`
+    );
   }
 
   // Render HTML content instantly

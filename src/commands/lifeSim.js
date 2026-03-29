@@ -10,6 +10,7 @@ export function registerLifeSimCommands(terminal) {
     ['sleep', sleep, 'Attempt sleep mode', 'life'],
     ['coffee', coffee, 'Install caffeine patch', 'life'],
     ['walk', walk, 'Go outside', 'life'],
+    ['shutdown', shutdown, 'Power down the system', 'life'],
     ['focus', focus, 'Activate focus mode', 'life'],
     ['small_step', smallStep, 'Do one small thing', 'life'],
   ]);
@@ -173,4 +174,26 @@ function smallStep() {
     '',
     'Small steps change trajectories.',
   ].join('\n');
+}
+
+async function shutdown({ renderer }) {
+  await renderer.typeLine('System powering down...', '', 15);
+  await renderer.wait(600);
+  renderer.blank();
+  await renderer.typeLine("Today's stats:", '', 12);
+  const stats = [
+    '  - Problems solved: 1',
+    '  - Mistakes made: several',
+    '  - Things learned: a few',
+    '  - People helped: hopefully',
+    '  - Progress: small but real',
+  ];
+  for (const line of stats) {
+    await renderer.typeLine(line, '', 10);
+    await renderer.wait(200);
+  }
+  renderer.blank();
+  await renderer.wait(400);
+  await renderer.typeLine('Good night.', 'dim', 20);
+  return null;
 }
