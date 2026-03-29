@@ -21,6 +21,10 @@ function open({ args }) {
       '  github',
       '  substack',
       '  linkedin',
+      '  twitter',
+      '  gumroad',
+      '  polymath',
+      '  orcid',
     ].join('\n');
   }
 
@@ -46,7 +50,11 @@ function open({ args }) {
     github: links.github,
     substack: links.substack,
     linkedin: links.linkedin,
+    twitter: links.twitter,
     gumroad: links.gumroad,
+    polymath: links.polymath,
+    orcid: links.orcid,
+    consulting: links.consulting,
   };
 
   if (linkMap[name] && linkMap[name] !== '#') {

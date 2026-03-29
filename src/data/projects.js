@@ -1,24 +1,31 @@
 export const projects = [
   {
-    name: 'Dragons & Distractions',
-    slug: 'dragons',
-    description: 'Design / content / store',
+    name: 'WhatsYourWhy',
+    slug: 'whatsyourwhy',
+    description: 'POD / main Shopify store',
     status: 'active',
-    url: '#', // placeholder
+    url: 'https://whatsyourwhy85.myshopify.com/',
   },
   {
     name: 'Shank Strategy',
     slug: 'shank-strategy',
     description: 'Consulting — execution strategy & operational systems',
     status: 'active',
-    url: '#',
+    url: 'https://shankstrategy.com/',
   },
   {
     name: 'Temporal Gradient',
     slug: 'temporal-gradient',
     description: 'Research — context ranking, psi scoring, AI systems',
     status: 'active',
-    url: '#',
+    url: 'https://orcid.org/0009-0005-4473-2515',
+  },
+  {
+    name: 'The Polymath',
+    slug: 'polymath',
+    description: 'Newsletter — the-polymath.xyz',
+    status: 'active',
+    url: 'https://the-polymath.xyz',
   },
   {
     name: 'Video Factory',
@@ -37,9 +44,16 @@ export const projects = [
   {
     name: 'The Man Store',
     slug: 'man-store',
-    description: 'E-commerce',
+    description: 'E-commerce — dropship store',
     status: 'active',
-    url: '#',
+    url: 'https://whatsyourwhy-2.myshopify.com/',
+  },
+  {
+    name: 'Operator Toolkit',
+    slug: 'operator-toolkit',
+    description: 'Digital products on Gumroad',
+    status: 'active',
+    url: 'https://whatsyourwhy85.gumroad.com/',
   },
 ];
 
