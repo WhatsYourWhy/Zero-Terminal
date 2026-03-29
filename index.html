@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ZERO TERMINAL</title>
+  <meta name="description" content="ZERO TERMINAL — An operating system for figuring it out.">
+  <meta property="og:title" content="ZERO TERMINAL">
+  <meta property="og:description" content="An operating system for figuring it out.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles/main.css">
+  <link rel="stylesheet" href="/src/styles/effects.css">
+  <link rel="stylesheet" href="/src/styles/boot.css">
+</head>
+<body>
+  <div id="terminal">
+    <div id="output"></div>
+    <div id="input-line">
+      <span id="prompt">zero:~$ </span>
+      <div id="input-wrap">
+        <input type="text" id="cmd-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      </div>
+    </div>
+  </div>
+  <div id="mobile-bar"></div>
+  <div class="scanlines"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
