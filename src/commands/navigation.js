@@ -13,18 +13,18 @@ function open({ args }) {
   const name = args.join(' ').toLowerCase();
 
   if (!name) {
+    const nameWidth = Math.max(...projects.map((p) => p.name.length), 4);
+    const projectLines = projects.map((p) => {
+      const gap = ' '.repeat(Math.max(2, nameWidth - p.name.length + 2));
+      return `  ${p.name}${gap}${p.slug}`;
+    });
     return [
-      'Usage: open <name>',
+      'Usage: open <name-or-slug>',
       '',
-      'Available:',
-      ...projects.map(p => `  ${p.slug}`),
-      '  github',
-      '  substack',
-      '  linkedin',
-      '  twitter',
-      '  gumroad',
-      '  polymath',
-      '  orcid',
+      'Projects:',
+      ...projectLines,
+      '',
+      'Also: github  substack  linkedin  twitter  gumroad  polymath  orcid  consulting',
     ].join('\n');
   }
 

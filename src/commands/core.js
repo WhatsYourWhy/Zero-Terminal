@@ -73,7 +73,7 @@ function projectsCmd() {
     lines.push(`     ${p.description}`);
   }
   lines.push('');
-  lines.push('Type: open <project-name> for details.');
+  lines.push('Type: open <slug> for link or details.');
   return lines.join('\n');
 }
 
@@ -106,8 +106,13 @@ function research() {
     '  - Operations Strategy',
     '  - Energy / Compute / Society',
     '',
-    'Papers:',
-    '  - Collective Consciousness Hypothesis (Zenodo)',
+    'Repository:',
+    `    ${links.temporalGradientRepo}`,
+    '',
+    'Paper:',
+    '  Collective Consciousness Hypothesis',
+    `    Zenodo:      ${links.collectiveConsciousnessZenodo}`,
+    `    PhilArchive: ${links.collectiveConsciousnessPhilArchive}`,
     '',
     'Type: open temporal-gradient for details.',
   ].join('\n');
@@ -117,11 +122,14 @@ function store() {
   return [
     'Stores:',
     '',
-    '  1. WhatsYourWhy (POD / main store)',
-    '  2. The Man Store (dropship)',
-    '  3. Operator Toolkit (Gumroad)',
+    '  1. WhatsYourWhy — slug: whatsyourwhy',
+    '     POD / main Shopify store',
+    '  2. The Man Store — slug: man-store',
+    '     Dropship',
+    '  3. Operator Toolkit — slug: operator-toolkit',
+    '     Gumroad',
     '',
-    'Type: open <store-name> for link.',
+    'Type: open <slug> for link.',
   ].join('\n');
 }
 
