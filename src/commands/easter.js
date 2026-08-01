@@ -7,6 +7,8 @@ export function registerEasterCommands(terminal) {
     ['sudo', sudo, 'Attempt root access', 'easter'],
     ['why', why, 'Display existential prompt', 'easter'],
     ['matrix', matrix, 'Enter the Matrix', 'easter'],
+    ['turnover', turnover, 'The road is innocent', 'easter'],
+    ['blame', blame, 'Assign responsibility', 'easter'],
   ]);
 }
 
@@ -75,6 +77,73 @@ function why() {
     '  5. Freedom',
     '  6. Because it\'s interesting',
     '  7. Because you can',
+  ].join('\n');
+}
+
+async function turnover({ renderer }) {
+  renderer.printLine('Two bursts of light arrived late.');
+  renderer.printLine('Blaming the road...');
+  await renderer.wait(1100);
+  renderer.blank();
+  renderer.printLine('  GRB 160625B ... turnover at 19.3 MeV');
+  await renderer.wait(500);
+  renderer.printLine('  GRB 190530A ... turnover at  3.1 MeV');
+  await renderer.wait(1100);
+  renderer.blank();
+  renderer.printLine('A factor of six apart. The road cannot do that.');
+  renderer.printLine('The road is innocent.');
+  await renderer.wait(1400);
+
+  // full-screen overlay; the iframe ignores pointers so any click returns
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:#05060e;cursor:pointer';
+  const frame = document.createElement('iframe');
+  frame.src = '/turnover.html';
+  frame.style.cssText = 'width:100%;height:100%;border:0;pointer-events:none';
+  const hint = document.createElement('div');
+  hint.textContent = '[ click anywhere to return ]';
+  hint.style.cssText =
+    'position:absolute;left:14px;bottom:12px;color:#4a5170;' +
+    'font:11px Georgia,serif;letter-spacing:0.12em;text-transform:uppercase';
+  overlay.appendChild(frame);
+  overlay.appendChild(hint);
+  document.body.appendChild(overlay);
+
+  await new Promise((resolve) => {
+    const close = () => {
+      overlay.remove();
+      window.removeEventListener('keydown', onKey);
+      resolve();
+    };
+    const onKey = (e) => {
+      if (e.key === 'Escape') close();
+    };
+    overlay.addEventListener('click', close);
+    window.addEventListener('keydown', onKey);
+  });
+
+  renderer.blank();
+  renderer.printLine('The turnover tracks the source.', 'dim');
+  return null;
+}
+
+function blame(ctx) {
+  const target = ctx.args.join(' ').toLowerCase();
+  if (target === 'road' || target === 'the road') {
+    return turnover(ctx);
+  }
+  if (!target) {
+    return [
+      'Nothing to blame.',
+      '',
+      'Try: blame road',
+    ].join('\n');
+  }
+  return [
+    `Blame logged against: ${target}`,
+    '',
+    'Evidence not found.',
+    'Blame returned to sender.',
   ].join('\n');
 }
 

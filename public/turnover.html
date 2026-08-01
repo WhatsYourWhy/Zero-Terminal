@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Turnover Tracks the Source</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #05060e; overflow: hidden; }
+  canvas { display: block; }
+  #hint {
+    position: fixed; right: 14px; top: 12px; color: #4a5170;
+    font: 11px/1.5 Georgia, serif; letter-spacing: 0.12em; text-transform: uppercase;
+    user-select: none;
+  }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hint">two bursts &middot; one voice</div>
+<script>
+"use strict";
+/*
+  THE TURNOVER TRACKS THE SOURCE
+  An art-in-code reading of the vault's Section 8 finding.
+
+  Two bright gamma-ray bursts. In each, high-energy light lags low-energy
+  light, and the lag grows with energy until it turns over and falls.
+  GRB 160625B turns over near 19.3 MeV. GRB 190530A turns over near 3.1 MeV.
+  A factor of six apart: fatal to a fixed vacuum scale.
+
+  But divide each burst by its own spectral peak and the two curves
+  collapse onto one another, near a ratio of two to four.
+  The delay is a property of the fire, not the road.
+
+  The animation breathes between the two readings:
+  absolute energy, where the curves stand apart,
+  and source-scaled energy, where they answer in one voice.
+*/
+
+const cv = document.getElementById("c");
+const cx = cv.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+
+// seeded rng so the sky is the same sky every night
+function mulberry32(a) {
+  return function() {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+const rng = mulberry32(20260801);
+
+// ---- the two bursts, numbers from the catalog ----
+// tau(E) = amp * u * exp(1 - u), u = E / Eturn : rises, turns over, falls
+const BURSTS = [
+  { name: "GRB 160625B", Eturn: 19.3, Epk: 6.4, amp: 1.00, bright: 1.0 },
+  { name: "GRB 190530A", Eturn: 3.1,  Epk: 1.3, amp: 0.62, bright: 0.72 }
+];
+
+// energy to color: low energy runs red, high energy runs violet-blue
+function energyHue(E) {
+  const t = Math.min(1, Math.max(0, (Math.log10(E) + 1) / 3)); // 0.1 to 100 MeV
+  return 8 + t * 250;
+}
+
+function tauOf(b, E) {
+  const u = E / b.Eturn;
+  return b.amp * u * Math.exp(1 - u);
+}
+
+// stars, drawn once
+let sky = null;
+function buildSky() {
+  sky = document.createElement("canvas");
+  sky.width = W * DPR; sky.height = H * DPR;
+  const s = sky.getContext("2d");
+  s.scale(DPR, DPR);
+  const r2 = mulberry32(1606);
+  for (let i = 0; i < 420; i++) {
+    const x = r2() * W, y = r2() * H;
+    const m = r2();
+    s.globalAlpha = 0.08 + m * 0.5;
+    s.fillStyle = m > 0.92 ? "#cfd8ff" : "#8d97c4";
+    s.beginPath();
+    s.arc(x, y, m > 0.92 ? 1.2 : 0.6, 0, 7);
+    s.fill();
+  }
+  s.globalAlpha = 1;
+}
+
+function resize() {
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  W = window.innerWidth; H = window.innerHeight;
+  cv.width = W * DPR; cv.height = H * DPR;
+  cv.style.width = W + "px"; cv.style.height = H + "px";
+  cx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  buildSky();
+}
+window.addEventListener("resize", resize);
+resize();
+
+// ---- layout ----
+function plot() {
+  const mx = Math.max(60, W * 0.10);
+  return { x0: mx, x1: W - mx, yBase: H * 0.62, yAmp: H * 0.30 };
+}
+
+// absolute axis: log10 E in [-1, 2].  ratio axis: log10(E/Epk) in [-1.6, 1.6]
+function xAbs(E, p)      { return p.x0 + (Math.log10(E) + 1) / 3 * (p.x1 - p.x0); }
+function xRatio(E, b, p) { return p.x0 + (Math.log10(E / b.Epk) + 1.6) / 3.2 * (p.x1 - p.x0); }
+
+function smooth(t) { t = Math.min(1, Math.max(0, t)); return t * t * (3 - 2 * t); }
+
+// ---- timeline: 30 s breath ----
+// 0..8    absolute view          (apart: the tension)
+// 8..12   morph out              (divide each star by itself)
+// 12..24  ratio view             (together: the result)
+// 24..28  morph back
+const PERIOD = 30;
+function morphAt(t) {
+  if (t < 8)  return 0;
+  if (t < 12) return smooth((t - 8) / 4);
+  if (t < 24) return 1;
+  if (t < 28) return 1 - smooth((t - 24) / 4);
+  return 0;
+}
+
+const POEM = [
+  { from: 0.5,  to: 8,    text: "The light was late, and we blamed the road:" },
+  { from: 2.5,  to: 8,    text: "the long vacuum, some grain in space itself." },
+  { from: 4.5,  to: 8,    text: "Nineteen for the bright one. Three for the faint." },
+  { from: 8.5,  to: 12.5, text: "Divide each star by its own fire." },
+  { from: 12.5, to: 23,   text: "The two answer in one voice." },
+  { from: 15,   to: 23,   text: "We wrote the rule before the numbers came." },
+  { from: 17,   to: 23,   text: "The numbers came against us. We kept both pages." },
+  { from: 24,   to: 29.5, text: "The road is innocent. The turnover tracks the source." }
+];
+
+// photons riding each curve
+const RIDERS = [];
+for (let i = 0; i < 44; i++) {
+  RIDERS.push({ b: i % 2, u: rng(), speed: 0.05 + rng() * 0.09 });
+}
+
+function curvePoint(b, E, m, p) {
+  const x = xAbs(E, p) * (1 - m) + xRatio(E, b, p) * m;
+  const y = p.yBase - tauOf(b, E) * p.yAmp;
+  return [x, y];
+}
+
+const E_LO = 0.12, E_HI = 90;
+function eAt(f) { return E_LO * Math.pow(E_HI / E_LO, f); } // f in [0,1] along log axis
+
+function draw(nowMs) {
+  const t = (nowMs / 1000) % PERIOD;
+  const m = morphAt(t);
+  const p = plot();
+
+  cx.clearRect(0, 0, W, H);
+  cx.drawImage(sky, 0, 0, W, H);
+
+  // baseline: the road
+  cx.strokeStyle = "rgba(120,130,170,0.22)";
+  cx.lineWidth = 1;
+  cx.beginPath();
+  cx.moveTo(p.x0, p.yBase); cx.lineTo(p.x1, p.yBase);
+  cx.stroke();
+
+  // axis label crossfades between the two readings
+  cx.font = "12px Georgia, serif";
+  cx.textAlign = "center";
+  cx.fillStyle = "rgba(150,160,200," + (0.7 * (1 - m)).toFixed(3) + ")";
+  cx.fillText("energy  (MeV, rest frame)", (p.x0 + p.x1) / 2, p.yBase + 26);
+  cx.fillStyle = "rgba(150,160,200," + (0.7 * m).toFixed(3) + ")";
+  cx.fillText("energy / the burst's own spectral peak", (p.x0 + p.x1) / 2, p.yBase + 44);
+
+  // lag axis hint
+  cx.save();
+  cx.translate(p.x0 - 26, p.yBase - p.yAmp * 0.55);
+  cx.rotate(-Math.PI / 2);
+  cx.fillStyle = "rgba(150,160,200,0.45)";
+  cx.fillText("lag", 0, 0);
+  cx.restore();
+
+  // the two curves
+  const N = 220;
+  for (const b of BURSTS) {
+    cx.lineWidth = 2.2;
+    for (let i = 0; i < N; i++) {
+      const E0 = eAt(i / N), E1 = eAt((i + 1) / N);
+      const a = curvePoint(b, E0, m, p), c = curvePoint(b, E1, m, p);
+      const hue = energyHue((E0 + E1) / 2);
+      const glow = 0.55 * b.bright + 0.35 * m * b.bright;
+      cx.strokeStyle = "hsla(" + hue.toFixed(0) + ", 85%, " + (58 + 10 * m) + "%, " + glow.toFixed(3) + ")";
+      cx.beginPath(); cx.moveTo(a[0], a[1]); cx.lineTo(c[0], c[1]); cx.stroke();
+    }
+
+    // turnover node: the finding, one per star
+    const [tx, ty] = curvePoint(b, b.Eturn, m, p);
+    const pulse = 3.2 + Math.sin(nowMs / 300 + b.Eturn) * 0.9;
+    const g = cx.createRadialGradient(tx, ty, 0, tx, ty, pulse * 5);
+    g.addColorStop(0, "rgba(255,250,235,0.9)");
+    g.addColorStop(1, "rgba(255,250,235,0)");
+    cx.fillStyle = g;
+    cx.beginPath(); cx.arc(tx, ty, pulse * 5, 0, 7); cx.fill();
+    cx.fillStyle = "#fffdf5";
+    cx.beginPath(); cx.arc(tx, ty, 2.2, 0, 7); cx.fill();
+
+    // name and number near each turnover, fading with the view that owns it
+    cx.textAlign = tx < (p.x0 + p.x1) / 2 ? "left" : "right";
+    const dx = tx < (p.x0 + p.x1) / 2 ? 10 : -10;
+    cx.font = "11px Georgia, serif";
+    cx.fillStyle = "rgba(200,206,235," + (0.75 * (1 - m) + 0.35).toFixed(3) + ")";
+    cx.fillText(b.name, tx + dx, ty - 16);
+    cx.fillStyle = "rgba(160,168,205," + (0.8 * (1 - m)).toFixed(3) + ")";
+    cx.fillText("turns over at " + b.Eturn.toFixed(1) + " MeV", tx + dx, ty - 2);
+  }
+
+  // in ratio view, a faint white voice where the two curves agree
+  if (m > 0.02) {
+    cx.lineWidth = 5;
+    for (let i = 0; i < N; i++) {
+      const f0 = i / N, f1 = (i + 1) / N;
+      // walk the shared ratio axis: r = E/Epk
+      const r0 = Math.pow(10, -1.6 + 3.2 * f0), r1 = Math.pow(10, -1.6 + 3.2 * f1);
+      const pts0 = BURSTS.map(b => curvePoint(b, r0 * b.Epk, m, p));
+      const pts1 = BURSTS.map(b => curvePoint(b, r1 * b.Epk, m, p));
+      const gap = Math.abs(pts0[0][1] - pts0[1][1]);
+      const close = Math.max(0, 1 - gap / (p.yAmp * 0.18));
+      if (close <= 0) continue;
+      const y0 = (pts0[0][1] + pts0[1][1]) / 2, y1 = (pts1[0][1] + pts1[1][1]) / 2;
+      cx.strokeStyle = "rgba(255,252,240," + (0.16 * m * close).toFixed(3) + ")";
+      cx.beginPath();
+      cx.moveTo((pts0[0][0] + pts0[1][0]) / 2, y0);
+      cx.lineTo((pts1[0][0] + pts1[1][0]) / 2, y1);
+      cx.stroke();
+    }
+  }
+
+  // photons riding home
+  for (const r of RIDERS) {
+    r.u += r.speed / 60;
+    if (r.u > 1) r.u -= 1;
+    const b = BURSTS[r.b];
+    const E = eAt(r.u);
+    const [x, y] = curvePoint(b, E, m, p);
+    cx.fillStyle = "hsla(" + energyHue(E).toFixed(0) + ", 90%, 75%, 0.85)";
+    cx.beginPath(); cx.arc(x, y, 1.4, 0, 7); cx.fill();
+  }
+
+  // title
+  cx.textAlign = "center";
+  cx.fillStyle = "rgba(225,228,245,0.92)";
+  cx.font = "300 " + Math.min(30, W / 26) + "px Georgia, serif";
+  cx.fillText("THE TURNOVER TRACKS THE SOURCE", W / 2, H * 0.12);
+  cx.font = "italic 13px Georgia, serif";
+  cx.fillStyle = "rgba(150,158,195,0.7)";
+  cx.fillText("two gamma-ray bursts, read once", W / 2, H * 0.12 + 24);
+
+  // poem lines, each with its season
+  cx.font = "italic " + Math.min(17, W / 46) + "px Georgia, serif";
+  let shown = 0;
+  for (const line of POEM) {
+    let a = 0;
+    if (t >= line.from && t <= line.to) {
+      a = Math.min(smooth((t - line.from) / 1.2), smooth((line.to - t) / 1.2));
+    }
+    if (a <= 0.01) continue;
+    cx.fillStyle = "rgba(214,218,240," + (0.85 * a).toFixed(3) + ")";
+    cx.fillText(line.text, W / 2, H * 0.80 + shown * 24);
+    shown++;
+  }
+
+  // the ledger line, always faintly present
+  cx.font = "10px Georgia, serif";
+  cx.fillStyle = "rgba(120,128,165,0.5)";
+  cx.fillText("one quantity moves by six. the other holds to a third. the rule was written first.", W / 2, H - 16);
+
+  requestAnimationFrame(draw);
+}
+requestAnimationFrame(draw);
+</script>
+</body>
+</html>

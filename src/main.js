@@ -47,7 +47,7 @@ async function init() {
       'logs', 'theme', 'build', 'deploy', 'think', 'money', 'sleep',
       'coffee', 'walk', 'focus', 'small_step', 'compare', 'doomscroll',
       'redo_past', 'meaning', '42', 'why', 'history', 'uptime',
-      'shutdown', 'matrix', 'ls', 'cat', 'pwd',
+      'shutdown', 'matrix', 'ls', 'cat', 'pwd', 'turnover',
     ];
     const cmd = autoCmd.trim().split(/\s+/)[0].toLowerCase();
     if (whitelist.includes(cmd)) {
